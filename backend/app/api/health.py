@@ -1,0 +1,19 @@
+from fastapi import APIRouter
+
+from app.core.config import settings
+
+
+router = APIRouter(
+    prefix="/health",
+    tags=["Health"],
+)
+
+
+@router.get("")
+def health_check():
+    return {
+        "status": "healthy",
+        "service": "sonance-api",
+        "environment": settings.environment,
+        "version": settings.app_version,
+    }

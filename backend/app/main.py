@@ -1,24 +1,25 @@
 from fastapi import FastAPI
 
+from app.api.health import router as health_router
+from app.api.playlists import router as playlists_router
+from app.core.config import settings
+
+
 app = FastAPI(
-    title="Sonance",
-    description="A music intelligence platform that analyzes playlists, generates stories, matches characters, and recommends songs.",
-    version="0.1.0",
+    title=settings.app_name,
+    description=settings.app_description,
+    version=settings.app_version,
 )
+
+
+app.include_router(health_router)
+app.include_router(playlists_router)
 
 
 @app.get("/")
 def root():
     return {
-        "message": "Welcome to Sonance",
+        "message": f"Welcome to {settings.app_name}",
         "docs": "/docs",
         "health": "/health",
-    }
-
-
-@app.get("/health")
-def health_check():
-    return {
-        "status": "healthy",
-        "service": "sonance-api",
     }

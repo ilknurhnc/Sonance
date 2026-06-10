@@ -7,6 +7,8 @@ from app.core.config import settings
 
 SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize"
 SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token"
+SPOTIFY_CURRENT_USER_URL = "https://api.spotify.com/v1/me"
+SPOTIFY_PLAYLISTS_URL = "https://api.spotify.com/v1/me/playlists"
 
 
 def build_spotify_login_url():
@@ -33,6 +35,50 @@ async def exchange_code_for_token(code: str):
         response = await client.post(
             SPOTIFY_TOKEN_URL,
             data=payload,
+        )
+
+    response.raise_for_status()
+
+    return response.json()
+
+
+async def get_current_user(access_token: str):
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            SPOTIFY_CURRENT_USER_URL,
+            headers={
+                "Authorization": f"Bearer {access_token}",
+            },
+        )
+
+    response.raise_for_status()
+
+    return response.json()
+
+
+async def get_current_user_playlists(access_token: str):
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            SPOTIFY_PLAYLISTS_URL,
+            headers={
+                "Authorization": f"Bearer {access_token}",
+            },
+        )
+
+    response.raise_for_status()
+
+    return response.json()
+
+
+async def get_playlist_tracks(access_token: str, playlist_id: str):
+    url = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            url,
+            headers={
+                "Authorization": f"Bearer {access_token}",
+            },
         )
 
     response.raise_for_status()

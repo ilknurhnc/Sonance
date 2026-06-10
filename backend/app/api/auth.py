@@ -1,7 +1,10 @@
 from fastapi import APIRouter
 from fastapi.responses import RedirectResponse
 
-from app.services.spotify_service import build_spotify_login_url
+from app.services.spotify_service import (
+    build_spotify_login_url,
+    exchange_code_for_token,
+)
 
 
 router = APIRouter(
@@ -18,14 +21,19 @@ def login_with_spotify():
 
 
 @router.get("/callback")
-def spotify_callback(code: str | None = None, error: str | None = None):
+async def spotify_callback(
+    code: str | None = None,
+    error: str | None = None,
+):
     if error:
         return {
             "status": "error",
             "message": error,
         }
 
+    token_data = await exchange_code_for_token(code)
+
     return {
         "status": "success",
-        "code": code,
+        "token_data": token_data,
     }

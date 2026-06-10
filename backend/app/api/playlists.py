@@ -1,12 +1,14 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from app.schemas.playlist import (
-    PlaylistAnalyzeResponse,
+    PlaylistAnalysisResponse,
     PlaylistCreateRequest,
+    PlaylistDetailResponse,
     PlaylistListResponse,
 )
 from app.services.playlist_service import (
     analyze_playlist_by_id,
+    get_playlist_by_id,
     get_user_playlists,
 )
 
@@ -27,9 +29,33 @@ def list_playlists():
     }
 
 
+@router.get(
+    "/{playlist_id}",
+    response_model=PlaylistDetailResponse,
+)
+def get_playlist(playlist_id: str):
+    playlist = get_playlist_by_id(playlist_id)
+
+    if playlist is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Playlist not found",
+        )
+
+    return playlist
+
+
 @router.post(
     "/analyze",
-    response_model=PlaylistAnalyzeResponse,
+    response_model=PlaylistAnalysisResponse,
 )
 def analyze_playlist(payload: PlaylistCreateRequest):
+    playlist = get_playlist_by_id(payload.playlist_id)
+
+    if playlist is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Playlist not found",
+        )
+
     return analyze_playlist_by_id(payload.playlist_id)

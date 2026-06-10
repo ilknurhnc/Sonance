@@ -1,14 +1,10 @@
+from app.core.mock_profiles import DEFAULT_MOOD_PROFILE, MOOD_PROFILES
 from app.services.archetype_service import determine_archetype
 from app.services.character_service import determine_character_match
 
 
-def generate_mock_mood_profile():
-    return {
-        "nostalgic": 88,
-        "dreamy": 76,
-        "melancholic": 69,
-        "energetic": 42,
-    }
+def get_mock_mood_profile(playlist_id: str):
+    return MOOD_PROFILES.get(playlist_id, DEFAULT_MOOD_PROFILE)
 
 
 def generate_story(archetype: dict):
@@ -20,7 +16,7 @@ def generate_story(archetype: dict):
 
 
 def analyze_playlist(playlist_id: str):
-    mood_profile = generate_mock_mood_profile()
+    mood_profile = get_mock_mood_profile(playlist_id)
     archetype = determine_archetype(mood_profile)
     character_match = determine_character_match(archetype, mood_profile)
 

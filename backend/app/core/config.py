@@ -7,6 +7,10 @@ class Settings(BaseSettings):
     app_description: str = "A music intelligence platform."
     environment: str = "development"
 
+    spotify_client_id: str
+    spotify_client_secret: str
+    spotify_redirect_uri: str
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

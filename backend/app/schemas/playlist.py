@@ -39,8 +39,18 @@ class ArchetypeResponse(BaseModel):
     tone: str
 
 
+class CharacterMatchResponse(BaseModel):
+    id: str
+    name: str
+    universe: str
+    description: str
+    match_score: int
+    reason: str
+
+
 class PlaylistAnalysisResponse(BaseModel):
     playlist_id: str
     archetype: ArchetypeResponse
     mood_profile: MoodProfile
+    character_match: CharacterMatchResponse
     story: str

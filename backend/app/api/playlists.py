@@ -6,8 +6,8 @@ from app.schemas.playlist import (
     PlaylistDetailResponse,
     PlaylistListResponse,
 )
+from app.services.analysis_service import analyze_playlist
 from app.services.playlist_service import (
-    analyze_playlist_by_id,
     get_playlist_by_id,
     get_user_playlists,
 )
@@ -49,7 +49,7 @@ def get_playlist(playlist_id: str):
     "/analyze",
     response_model=PlaylistAnalysisResponse,
 )
-def analyze_playlist(payload: PlaylistCreateRequest):
+def analyze_playlist_endpoint(payload: PlaylistCreateRequest):
     playlist = get_playlist_by_id(payload.playlist_id)
 
     if playlist is None:
@@ -58,4 +58,4 @@ def analyze_playlist(payload: PlaylistCreateRequest):
             detail="Playlist not found",
         )
 
-    return analyze_playlist_by_id(payload.playlist_id)
+    return analyze_playlist(payload.playlist_id)
